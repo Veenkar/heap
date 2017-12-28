@@ -31,7 +31,7 @@ typedef struct Heap_Tag
 
 
 /* FUNCTION-LIKE MACROS */
-#define Heap_Pos_Parent(pos)            ( (pos) / 2     ) //wrong
+//#define Heap_Pos_Parent(pos)            ( (pos) / 2     ) //wrong
 #define Heap_Pos_Left(pos)              ( 2* (pos) +1   )
 #define Heap_Pos_Right(pos)             ( 2* (pos) +2   )
 #define Heap_Level_Capacity(level)      ( 1 << (level)  )
@@ -63,6 +63,15 @@ void Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2)
     heap.array[pos2] = temp;
 }
 
+void Build_Max_Heap(Heap_T heap)
+{
+    Heap_Pos_T pos = heap.heap_size / 2;
+    do
+    {
+        Max_Heapify(heap, pos);
+    } while (pos-- !=0);
+}
+
 void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
 {
 
@@ -74,7 +83,7 @@ void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
     {   Heap_Pos_T max_el_pos;
         Heap_Node_T parent_val = heap.array[pos];
         Heap_Pos_T left_pos = Heap_Pos_Left(pos);
-        Heap_Pos_T right_pos = Heap_Pos_Left(pos);
+        Heap_Pos_T right_pos = Heap_Pos_Right(pos);
 
         if (Heap_El_Exists(heap, left_pos) && heap.array[left_pos] > parent_val)
         {
@@ -85,7 +94,7 @@ void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
             max_el_pos = pos;
         }
 
-        if (Heap_El_Exists(heap, right_pos) && heap.array[right_pos] > parent_val)
+        if (Heap_El_Exists(heap, right_pos) && heap.array[right_pos] > heap.array[max_el_pos])
         {
             max_el_pos = right_pos;
         }
@@ -103,7 +112,7 @@ void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
 #if HEAP_MODE == HEAP_TEST
 Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos)
 {
-    Heap_Pos_T level;
+    Heap_Pos_T level = 0;
     while (max_pos > 0)
     {
         max_pos = max_pos >> 1;
@@ -139,6 +148,7 @@ void Heap_Print(char* info_str, Heap_T heap)
     Heap_Pos_T last_number_digits = 0;
 
     printf("%s\n", info_str);
+    printf("capacity: %d\nheap_length: %d\n", heap.length, heap.heap_size);
 
     Print_Level_Spaces(level, max_level, last_number_digits, 1);
 
@@ -155,7 +165,7 @@ void Heap_Print(char* info_str, Heap_T heap)
         last_number_digits = printf("%d ", heap.array[el_id]);
         Print_Level_Spaces(level, max_level, last_number_digits, 2);
     }
-    printf("\n");
+    printf("\n\n");
 }
 #endif
 
@@ -165,12 +175,14 @@ void Heap_Print(char* info_str, Heap_T heap)
 
 int main()
 {
-    Heap_Node_T heap_array [] = {1, 211, 3, 411, 51, 6, 73, 8, 9, 1, 1, 1, 1, 1, 1, 1};
+    Heap_Node_T heap_array [] = {1, 2, 3, 3, 4, 2, 9};
     //memset(heap_array, 0, sizeof heap_array);
     Heap_T heap;
     heap = Heap_Full(heap_array, N_ELEMS(heap_array));
-    Max_Heapify(heap, 0);
     Heap_Print("heap:", heap);
+    Build_Max_Heap(heap);
+    Heap_Print("----heap----", heap);
+    Heap_Print("----heap----", heap);
 
     return 0;
 }
