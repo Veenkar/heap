@@ -48,8 +48,8 @@ Heap_T Heap(Heap_Node_T* array, Heap_Pos_T length, Heap_Pos_T heap_size)
     return obj;
 }
 
-#define Heap_Left_Exists(heap, pos)     (  Heap_El_Exists( (heap), (Heap_Pos_Left(pos))  )  )
-#define Heap_Right_Exists(heap, pos)    (  Heap_El_Exists( (heap), (Heap_Pos_Right(pos)) )  )
+//#define Heap_Left_Exists(heap, pos)     (  Heap_El_Exists( (heap), (Heap_Pos_Left(pos))  )  )
+//#define Heap_Right_Exists(heap, pos)    (  Heap_El_Exists( (heap), (Heap_Pos_Right(pos)) )  )
 bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos)
 {
     return pos < heap.heap_size;
