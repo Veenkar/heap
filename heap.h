@@ -52,7 +52,10 @@ bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos);
 void Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2);
 void Build_Max_Heap(Heap_T heap);
 void Max_Heapify(Heap_T heap, Heap_Pos_T pos);
+void Heap_Sort(Heap_T heap);
+
 #if HEAP_MODE == HEAP_TEST
+/* PRINT FUNCTIONS */
 Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos);
 void Heap_Print_Array(char* info_str, Heap_T heap);
 void Print_Level_Spaces(Heap_Pos_T level, Heap_Pos_T max_level, Heap_Pos_T last_number_digits, Heap_Pos_T times);

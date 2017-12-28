@@ -69,7 +69,21 @@ void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
 
 }
 
+void Heap_Sort(Heap_T heap)
+{
+    Heap_Pos_T original_heap_size = heap.heap_size;
+    Build_Max_Heap(heap);
+    for (Heap_Pos_T pos = heap.heap_size - 1; pos >0; --pos)
+    {
+        Heap_Swap(heap, 0, pos);
+        --heap.heap_size;
+        Max_Heapify(heap, 0);
+    }
+    heap.heap_size = original_heap_size;
+}
+
 #if HEAP_MODE == HEAP_TEST
+/* PRINT FUNCTIONS */
 Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos)
 {
     Heap_Pos_T level = 0;
@@ -127,22 +141,24 @@ void Heap_Print(char* info_str, Heap_T heap)
     }
     printf("\n\n");
 }
-#endif
-
 
 /* TEST */
 #define TEST_HEAP_SIZE 64
-
 int Heap_Test()
 {
-    Heap_Node_T heap_array [] = {1, 2, 3, 3, 4, 2, 9};
+    Heap_Node_T heap_array [] = {15, 4, 78, 1, 5};
     //memset(heap_array, 0, sizeof heap_array);
     Heap_T heap;
     heap = Heap_Full(heap_array, N_ELEMS(heap_array));
-    Heap_Print("heap:", heap);
-    Build_Max_Heap(heap);
+    Heap_Print_Array("array:", heap);
     Heap_Print("----heap----", heap);
+    Heap_Sort(heap);
+    Heap_Print_Array("array:", heap);
     Heap_Print("----heap----", heap);
 
     return 0;
 }
+
+#endif /*  HEAP_MODE == HEAP_TEST */
+
+
