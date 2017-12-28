@@ -1,3 +1,4 @@
 #ignored files
-**.pro.user
+**.pro.user.*
+*.pro.user
 
