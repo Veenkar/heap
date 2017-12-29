@@ -1,5 +1,19 @@
 #include "heap.h"
 
+/* DEFINES */
+#if HEAP_MODE == HEAP_TEST
+#ifndef RES_STR
+    #define RES_STR(val) val? "successful": "failed"
+#endif /* BOOL_STR */
+#ifndef UNUSED
+    #define UNUSED(val) ( (void) val )
+#endif /* BOOL_STR */
+#endif
+
+/* PRIVATE FUNCTION DECLARATIONS */
+void Print_Level_Spaces(Heap_Pos_T level, Heap_Pos_T max_level, Heap_Pos_T last_number_digits, Heap_Pos_T times);
+
+
 /* FUNCTIONS */
 /* constr */
 Heap_T Heap(Heap_Node_T* array, Heap_Pos_T length, Heap_Pos_T heap_size)
@@ -14,11 +28,12 @@ Heap_T Heap(Heap_Node_T* array, Heap_Pos_T length, Heap_Pos_T heap_size)
 /* heplers */
 int Heap_Arithmetic_Compare(Heap_T heap, Heap_Node_T el1, Heap_Node_T el2)
 {
+    UNUSED(heap);
     return el1 - el2;
 }
 bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos)
 {
-    return pos < heap.heap_size;
+    return pos < heap.heap_size && heap.array != NULL;
 }
 Heap_Pos_T Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2)
 {
@@ -27,6 +42,16 @@ Heap_Pos_T Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2)
     heap.array[pos1] = heap.array[pos2];
     heap.array[pos2] = temp;
     return pos2;
+}
+Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos)
+{
+    Heap_Pos_T level = 0;
+    while (max_pos > 0)
+    {
+        max_pos = max_pos >> 1;
+        ++level;
+    }
+    return level;
 }
 
 /* core */
@@ -77,73 +102,75 @@ void Max_Heapify(Heap_T heap, Heap_Pos_T pos)
 }
 void Heap_Sort(Heap_T heap)
 {
-    Heap_Pos_T original_heap_size = heap.heap_size;
     Build_Max_Heap(heap);
+    Heap_Sort_Maxheap(heap);
+}
+void Heap_Sort_Maxheap(Heap_T heap)
+{
     for (Heap_Pos_T pos = heap.heap_size - 1; pos >0; --pos)
     {
         Heap_Swap(heap, 0, pos);
         --heap.heap_size;
         Max_Heapify_Root(heap);
     }
-    heap.heap_size = original_heap_size;
 }
-Heap_Node_T Heap_Extract_Max(Heap_T heap)
+Heap_Node_T Heap_Maximum(Heap_T heap)
 {
-    if (heap.heap_size <= 0)
+    Heap_Node_T res = {0};
+    if (heap.heap_size > 0)
     {
-        Heap_Node_T res = { 0 };
-        return res;
+        res = heap.array[0];
+    }
+    return res;
+}
+
+Heap_Node_T Heap_Extract_Max(Heap_T *heap_)
+{
+    Heap_Node_T maximum = Heap_Maximum(*heap_);
+    if (heap_->heap_size > 0)
+    {
+        Heap_Swap(*heap_, 0, --heap_->heap_size);
+        Max_Heapify_Root(*heap_);
+
+        #if HEAP_MODE == HEAP_TEST
+            printf("Heap_Extract successful -> %d\n\n", maximum);
+        #endif
     }
     else
     {
-        Heap_Node_T max = heap.array[0];
-        Heap_Swap(heap, 0, --heap.heap_size);
-        Max_Heapify_Root(heap);
-        return max;
+        #if HEAP_MODE == HEAP_TEST
+            printf("Heap_Extract failed -> %d\n\n", maximum);
+        #endif
     }
+    return maximum;
 }
-bool Heap_Insert(Heap_T heap, Heap_Node_T node)
+bool Heap_Insert(Heap_T *heap_, Heap_Node_T node)
 {
-    if (heap.length <= heap.heap_size)
+    bool res;
+    if (heap_==NULL && !Heap_El_Exists(*heap_, heap_->heap_size) )
     {
-        return false;
+        res = false;
     }
     else
     {
         Heap_Pos_T pos, pos_parent;
-        heap.array[heap.heap_size++] = node;
-        pos = heap.heap_size;
+        pos = heap_->heap_size;
+        heap_->array[heap_->heap_size++] = node;
 
-        while (pos > 0 && heap.array[pos_parent = Heap_Pos_Parent(pos)] < heap.array[pos])
+        while (pos > 0 && heap_->array[pos_parent = Heap_Pos_Parent(pos)] < heap_->array[pos])
         {
-            pos = Heap_Swap(heap, pos, pos_parent);
+            pos = Heap_Swap(*heap_, pos, pos_parent);
         }
-        return true;
+        res = true;
     }
+    #if HEAP_MODE == HEAP_TEST
+        printf("Heap_Insert %s <- %d\n\n", RES_STR(res), node);
+    #endif
+    return res;
 }
 
 #if HEAP_MODE == HEAP_TEST
 /* PRINT FUNCTIONS */
-Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos)
-{
-    Heap_Pos_T level = 0;
-    while (max_pos > 0)
-    {
-        max_pos = max_pos >> 1;
-        ++level;
-    }
-    return level;
-}
-void Heap_Print_Array(char* info_str, Heap_T heap)
-{
-    printf("%s[", info_str);
-    for (Heap_Pos_T el_id = 0; el_id < heap.length; ++el_id)
-    {
-        bool is_last = el_id == heap.length - 1;
-        printf(is_last? "%d": "%d, ", heap.array[el_id]);
-    }
-    printf("]\n");
-}
 void Print_Level_Spaces(Heap_Pos_T level, Heap_Pos_T max_level, Heap_Pos_T last_number_digits, Heap_Pos_T times)
 {
     for (Heap_Pos_T repeat = 0; repeat<times; repeat++)
@@ -153,6 +180,16 @@ void Print_Level_Spaces(Heap_Pos_T level, Heap_Pos_T max_level, Heap_Pos_T last_
             printf(" ");
         }
     }
+}
+void Heap_Print_Array(char* info_str, Heap_T heap)
+{
+    printf("%s[", info_str);
+    for (Heap_Pos_T el_id = 0; el_id < heap.heap_size; ++el_id)
+    {
+        bool is_last = el_id == heap.heap_size - 1;
+        printf(is_last? "%d": "%d, ", heap.array[el_id]);
+    }
+    printf("]\n");
 }
 void Heap_Print(char* info_str, Heap_T heap)
 {
@@ -166,7 +203,7 @@ void Heap_Print(char* info_str, Heap_T heap)
 
     Print_Level_Spaces(level, max_level, last_number_digits, 1);
 
-    for (Heap_Pos_T el_id = 0; el_id < heap.length; ++el_id)
+    for (Heap_Pos_T el_id = 0; el_id < heap.heap_size; ++el_id)
     {
         if (el_id >= level_capacity)
         {
@@ -179,22 +216,29 @@ void Heap_Print(char* info_str, Heap_T heap)
         last_number_digits = printf("%d ", heap.array[el_id]);
         Print_Level_Spaces(level, max_level, last_number_digits, 2);
     }
-    printf("\n\n");
+    printf("\n");
+    Heap_Print_Array("array:", heap);
+    printf("\n");
 }
 
 /* TEST */
 #define TEST_HEAP_SIZE 64
 int Heap_Test()
 {
-    Heap_Node_T heap_array [] = {15, 4, 78, 1, 5};
+    Heap_Node_T heap_array [20] = {15, 4, 78, 1, 5};
     //memset(heap_array, 0, sizeof heap_array);
     Heap_T heap;
-    heap = Heap_Full(heap_array, N_ELEMS(heap_array));
+    heap = Heap(heap_array, N_ELEMS(heap_array), 5);
+
     Heap_Print("----heap----", heap);
-    Heap_Print_Array("array:", heap);
-    Heap_Sort(heap);
+    Build_Max_Heap(heap);
     Heap_Print("----heap----", heap);
-    Heap_Print_Array("array:", heap);
+    Heap_Insert(&heap, 100);
+    Heap_Print("----heap----", heap);
+    Heap_Insert(&heap, 2);
+    Heap_Print("----heap----", heap);
+    Heap_Extract_Max(&heap);
+    Heap_Print("----heap----", heap);
 
     return 0;
 }

@@ -45,23 +45,25 @@ typedef struct Heap_Tag
 #define Heap_Full(array, length)    ( Heap(array, length, length)   )
 Heap_T Heap(Heap_Node_T* array, Heap_Pos_T length, Heap_Pos_T heap_size);
 
+/* heplers */
 int Heap_Arithmetic_Compare(Heap_T heap, Heap_Node_T el1, Heap_Node_T el2);
-
-//#define Heap_Left_Exists(heap, pos)     (  Heap_El_Exists( (heap), (Heap_Pos_Left(pos))  )  )
-//#define Heap_Right_Exists(heap, pos)    (  Heap_El_Exists( (heap), (Heap_Pos_Right(pos)) )  )
-bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos);
-
 Heap_Pos_T Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2);
+bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos);
+Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos);
+
+/* core */
 void Build_Max_Heap(Heap_T heap);
 #define Max_Heapify_Root(heap) ( Max_Heapify((heap), 0) )
 void Max_Heapify(Heap_T heap, Heap_Pos_T pos);
 void Heap_Sort(Heap_T heap);
+void Heap_Sort_Maxheap(Heap_T heap);
+Heap_Node_T Heap_Maximum(Heap_T heap);
+Heap_Node_T Heap_Extract_Max(Heap_T *heap_);
+bool Heap_Insert(Heap_T *heap_, Heap_Node_T node);
 
 #if HEAP_MODE == HEAP_TEST
 /* PRINT FUNCTIONS */
-Heap_Pos_T Heap_Max_Level(Heap_Pos_T max_pos);
 void Heap_Print_Array(char* info_str, Heap_T heap);
-void Print_Level_Spaces(Heap_Pos_T level, Heap_Pos_T max_level, Heap_Pos_T last_number_digits, Heap_Pos_T times);
 void Heap_Print(char* info_str, Heap_T heap);
 #endif
 
