@@ -35,22 +35,25 @@ typedef struct Heap_Tag
 
 
 /* FUNCTION-LIKE MACROS */
-//#define Heap_Pos_Parent(pos)            ( (pos) / 2     ) //wrong
-#define Heap_Pos_Left(pos)              ( 2* (pos) +1   )
-#define Heap_Pos_Right(pos)             ( 2* (pos) +2   )
-#define Heap_Level_Capacity(level)      ( 1 << (level)  )
+#define Heap_Pos_Parent(pos)            (   ((pos) - 1) / 2   )
+#define Heap_Pos_Left(pos)              (   (2 * (pos)) + 1   )
+#define Heap_Pos_Right(pos)             (   (2 * (pos)) + 2   )
+#define Heap_Level_Capacity(level)      (   1 << (level)      )
 
 /* FUNCTIONS */
 #define Heap_Empty(array, length)   ( Heap(array, length, 0)        )
 #define Heap_Full(array, length)    ( Heap(array, length, length)   )
 Heap_T Heap(Heap_Node_T* array, Heap_Pos_T length, Heap_Pos_T heap_size);
 
+int Heap_Arithmetic_Compare(Heap_T heap, Heap_Node_T el1, Heap_Node_T el2);
+
 //#define Heap_Left_Exists(heap, pos)     (  Heap_El_Exists( (heap), (Heap_Pos_Left(pos))  )  )
 //#define Heap_Right_Exists(heap, pos)    (  Heap_El_Exists( (heap), (Heap_Pos_Right(pos)) )  )
 bool Heap_El_Exists(Heap_T heap, Heap_Pos_T pos);
 
-void Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2);
+Heap_Pos_T Heap_Swap(Heap_T heap, Heap_Pos_T pos1, Heap_Pos_T pos2);
 void Build_Max_Heap(Heap_T heap);
+#define Max_Heapify_Root(heap) ( Max_Heapify((heap), 0) )
 void Max_Heapify(Heap_T heap, Heap_Pos_T pos);
 void Heap_Sort(Heap_T heap);
 
