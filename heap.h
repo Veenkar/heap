@@ -1,6 +1,11 @@
 #ifndef HEAP_H
 #define HEAP_H
 /*
+ *  HEAP ALGORITHMS
+ *
+ *  Author: Michal Marchewka
+ *  Email: michal.marchew@gmail.com
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -15,16 +20,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <stdint.h>
-#include <stdbool.h>
-
-#define N_ELEMS(x) (  (sizeof(x))  /  (sizeof(x[0]))  )
-
 /* OPTIONS */
 #define HEAP_TEST       0
 #define HEAP_GENERIC    1
 #define HEAP_MODE       HEAP_TEST
 /* END OPTIONS */
+
+/* INCLUDES */
+#include <stdint.h>
+#include <stdbool.h>
+
+/* MACROS */
+#ifndef RES_STR
+    #define N_ELEMS(x) (  (sizeof(x))  /  (sizeof(x[0]))  )
+#endif /* RES_STR */
 
 /* PROCESS OPTIONS */
 #if     HEAP_MODE == HEAP_TEST
