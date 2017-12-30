@@ -20,11 +20,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-/* OPTIONS */
-#define HEAP_TEST       0
-#define HEAP_GENERIC    1
-#define HEAP_MODE       HEAP_TEST
-/* END OPTIONS */
+/* PREPROC ENUMS */
+#define HEAP_MODE_TEST      0
+#define HEAP_MODE_GENERIC   1
+
+/***************** OPTIONS *****************/
+#define HEAP_MODE           HEAP_MODE_TEST
+/*************** END OPTIONS ***************/
 
 /* INCLUDES */
 #include <stdint.h>
@@ -42,9 +44,9 @@ typedef uint32_t Heap_Node_T;
 typedef void* Heap_Node_T;
 #endif  /* HEAP_MODE == HEAP_TEST */
 
+/* TYPES */
 typedef uint32_t Heap_Pos_T;
 
-/* TYPES */
 typedef struct Heap_Tag
 {
     Heap_Node_T * array;
